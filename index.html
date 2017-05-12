@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="UTF-8">
+    <title>The Cap Hill Neighborhood of Denver</title>
+    <link rel='stylesheet' type='text/css' href='css/styles.css'>
+</head>
+<body>
+  <header>
+    <div id='header-title'>
+      <h1>The Cap Hill Neighborhood of Denver</h1>
+    </div>
+    <div id='places-to-show-container'>
+      <h2>Places to Show:</h2>
+      <ul>
+        <li>Coffee Shops</li>
+        <li>Pizza</li>
+        <li>Ice Cream</li>
+        <li>Breweries</li>
+      </ul>
+    </div>
+    <div id='search-area'>
+      <input id='search-bar' class='rounded' type="text" placeholder="Ex: Pablos Coffee">
+      <input id="search-button" type="button" value="Go">
+    </div>
+    </header>
+
+  <div id = 'places-list'>
+
+  </div>
+
+
+  <div id="map"></div>
+
+  <script src="js/lib/knockout-3.2.0.js"></script>
+  <script src="js/app.js"></script>
+  <script src='https://maps.googleapis.com/maps/api/js?v=3&libraries=geometry,places&key=AIzaSyAosFpNNrLHBpMXqdzBonzKCglMLAeSx1M&callback=initMap'async defer></script>
+</body>
+</html>
