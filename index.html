@@ -13,11 +13,8 @@
     </div>
     <div id='places-to-show-container'>
       <h2>Places to Show:</h2>
-      <ul>
-        <li>Coffee Shops</li>
-        <li>Pizza</li>
-        <li>Ice Cream</li>
-        <li>Breweries</li>
+      <ul data-bind="foreach: placeLists">
+        <li><span data-bind="text: name"></span></li>
       </ul>
     </div>
     <div id='search-area'>
@@ -26,7 +23,10 @@
     </div>
     </header>
 
-  <div id = 'places-list'>
+  <div id='places-list'>
+    <ul>
+      <li></li>
+    </ul>
 
   </div>
 

@@ -6,16 +6,21 @@ var startingLng = -104.9797753;
 
 // Categories for our places.
 var categories = [
-  {name: 'Coffee', iconURL: './img/15.svg', query: 'coffee shops in Capitol Hill, Denver, CO'},
-  {name: 'Pizza', iconURL: './img/23.svg', query: 'pizza in Capitol Hill, Denver, CO'},
-  {name: 'Ice Cream', iconURL: './img/20.svg', query: 'ice cream shops in Capitol Hill, Denver, CO'},
-  {name: 'Breweries', iconURL: './img/14.svg', query: 'breweries in Capitol Hill, Denver, CO'}
+  {name: 'Coffee', iconURL: './img/Coffee.svg', query: 'coffee shops in Capitol Hill, Denver, CO'},
+  {name: 'Pizza', iconURL: './img/Pizza.svg', query: 'pizza in Capitol Hill, Denver, CO'},
+  {name: 'Ice Cream', iconURL: './img/iceCream.svg', query: 'ice cream shops in Capitol Hill, Denver, CO'},
+  {name: 'Breweries', iconURL: './img/Brewery.svg', query: 'breweries in Capitol Hill, Denver, CO'}
 ];
+
+// Data model storing our lists of places and categories.
+var placeLists = [];
+
+
 
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: startingLat, lng: startingLng},
-    zoom: 13,
+    zoom: 15,
     mapTypeControl: false
   });
 
@@ -26,29 +31,26 @@ function initMap() {
 
   function textSearchPlaces() {
     var placesService = new google.maps.places.PlacesService(map);
-    for (i=0; i < categories.length; i++) {
-      var query = categories[i].query;
+
+    // Get a list of places for each of our categories.
+    categories.forEach(function(category) {
+      var query = category.query;
       placesService.textSearch({
         query: query,
         bounds: bounds
       }, function(results, status) {
        if (status === google.maps.places.PlacesServiceStatus.OK) {
-         (function(iCopy) {
-            return function () {
-              var name = categories[iCopy].name;
-              var icon = categories[iCopy].iconURL;
+         var name = category.name;
+         var icon = category.iconURL;
+            createMarkersForPlaces(results, icon);
 
-             createMarkersForPlaces(results, icon);
-             // Create a place object for each category that includes the text search results.
-
-             var place = new Place(results, name, copy);
-             placeLists.push(place);
-           };
-         }(i));
-       };
+            // Create a place object for each category that includes the text search results.
+            var place = new Place(results, name, icon);
+            placeLists.push(place);
+      }
      });
-    }
- }
+   });
+ };
 
   function createMarkersForPlaces(places, categoryIcon) {
     var bounds = new google.maps.LatLngBounds();
@@ -129,16 +131,11 @@ function getPlacesDetails(marker, infowindow) {
 textSearchPlaces();
 }
 
-// Place constructor
+// Place constructor that will give us an object for each place category that contains the results list of places.
 function Place (results, name, icon) {
   this.results = results;
   this.name = name;
   this.icon = icon;
 };
-
-// Data model storing our lists of places and categories.
-
-var placeLists = [];
-
 
 setTimeout(function(){ console.log(placeLists); }, 2000);
