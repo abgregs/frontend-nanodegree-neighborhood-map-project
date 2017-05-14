@@ -12,10 +12,33 @@ var categories = [
   {name: 'Breweries', iconURL: './img/Brewery.svg', query: 'breweries in Capitol Hill, Denver, CO'}
 ];
 
-// Data model storing our lists of places and categories.
-var placeLists = [];
+// Data model storing our categories and lists of Places objects that go with each.
+var listings = [];
 
+// Place constructor that will give us an object for each place category that contains the results list of places.
+function Place (results, name, icon) {
+  this.results = results;
+  this.name = name;
+  this.icon = icon;
+};
 
+var ViewModel =  function() {
+  var self = this;
+  this.listings = ko.observableArray([]);
+
+  // Get our place listings and push to ko observableArray.
+  listings.forEach(function (listing) {
+            if (listings.length < categories.length) {
+              setTimeout(wait,100);
+              }
+            else {
+              self.listings.push(listing);
+              }
+          });
+
+};
+
+ko.applyBindings(new ViewModel());
 
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
@@ -46,10 +69,11 @@ function initMap() {
 
             // Create a place object for each category that includes the text search results.
             var place = new Place(results, name, icon);
-            placeLists.push(place);
+            listings.push(place);
       }
      });
    });
+
  };
 
   function createMarkersForPlaces(places, categoryIcon) {
@@ -131,11 +155,6 @@ function getPlacesDetails(marker, infowindow) {
 textSearchPlaces();
 }
 
-// Place constructor that will give us an object for each place category that contains the results list of places.
-function Place (results, name, icon) {
-  this.results = results;
-  this.name = name;
-  this.icon = icon;
-};
 
-setTimeout(function(){ console.log(placeLists); }, 2000);
+setTimeout(function(){ console.log(listings); }, 3000);
+setTimeout(function(){ console.log(ViewModel.listings()); }, 6000);
