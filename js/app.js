@@ -65,10 +65,13 @@ var ViewModel =  function() {
   // Takes places from our categories places list and removes them from the list view. This executes within our toggleMarkers() function whenever we are removing places from the map.
   this.removeFromListView = function(markerTitle) {
     var listNamesLive = self.listNamesLive;
+    var listNamesControl = self.listNamesControl;
     listNamesLive().forEach(function(listPlaceName) {
       if (listPlaceName === markerTitle) {
-        var index = listNamesLive.indexOf(listPlaceName);
-        listNamesLive.splice(index, 1);
+        var indexLive = listNamesLive.indexOf(listPlaceName);
+        var indexControl = listNamesControl.indexOf(listPlaceName);
+        listNamesLive.splice(indexLive, 1);
+        listNamesControl.splice(indexControl, 1);
       }
     });
   };
@@ -76,8 +79,10 @@ var ViewModel =  function() {
   // Takes places from our categories places list and removes them from the list view. This executes within our toggleMarkers() function whenever we are adding places back to the map.
   this.addToListView = function(markerTitle) {
     var listNamesLive = self.listNamesLive;
-        listNamesLive.push(markerTitle);
-        listNamesLive.sort();
+    var listNamesControl = self.listNamesControl;
+    listNamesLive.push(markerTitle);
+    listNamesLive.sort();
+    listNamesControl.push(markerTitle);
   };
 
   this.query = ko.observable('');
