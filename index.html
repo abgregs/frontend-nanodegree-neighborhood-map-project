@@ -7,32 +7,34 @@
     <link rel='stylesheet' type='text/css' href='css/styles.css'>
 </head>
 <body>
-  <header>
-    <div id='header-title'>
-      <h1>Food and Drinks in Denver's Cap Hill Neighborhood</h1>
-    </div>
-    <div id='places-to-show-container'>
-      <h2>Places to Show:</h2>
-      <ul>
-        <li></li>
-      </ul>
-    </div>
-    <div id='search-area'>
-      <input id='search-bar' class='rounded' type="text" placeholder="Ex: Pablos Coffee">
-      <input id="search-button" type="button" value="Go">
-    </div>
+
+    <header>
+      <div id='header-title'>
+        <h1>Food and Drinks in Denver's Cap Hill Neighborhood</h1>
+      </div>
+      <div id="places-to-show-container">
+        <h2 id="places-to-show-header">Places to Show</h2>
+        <ul data-bind="foreach: listings">
+          <li data-bind="text: name, click: $root.toggleMarkers" id="places-to-show-name"></li>
+        </ul>
+      </div>
+      <div id="search-area">
+        <input data-bind="value: query, valueUpdate: 'keyup'" id="search-bar" class="rounded" type="search" placeholder="Ex: Pablo's Coffee">
+      </div>
     </header>
 
-  <div id='places-list'>
-    <ul>
-      <li>
-</li>
-    </ul>
+    <div id=wrapper>
+    <div id="places-list-container">
+      <!-- <li data-bind="foreach: listings" id="places-list-heading"> -->
+        <!-- <h2 data-bind="text: name"></h2> -->
+          <ul data-bind="foreach: listNamesLive">
+              <li data-bind="text: $data, click: $root.activateMarker" id="places-list-item"></li>
+          </ul>
+      <!-- </li> -->
+    </div>
 
+    <div id="map"></div>
   </div>
-
-
-  <div id="map"></div>
 
   <script src="js/lib/knockout-3.2.0.js"></script>
   <script src="js/app.js"></script>

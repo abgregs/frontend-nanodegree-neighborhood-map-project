@@ -5,13 +5,41 @@ body {
   padding: 0;
 }
 
-#map {
-  height: 100%;
-  width: 100%;
+#wrapper {
+position: absolute;
+left: 0;
+right: 0;
+height: 100%
+
 }
+
+#map {
+  width: 75%;
+  min-width: 125px;
+  height: 100%;
+  float: left;
+  z-index: 0;
+}
+
+#places-list-container {
+  float: left;
+  width: 25%;
+  min-width: 175px;
+  height: 100%;
+  z-index: 0;
+}
+
+    #places-list-item {
+      padding: 2px 0 2px 5px;
+      list-style: none;
+      cursor: pointer;
+      font-size: 10px;
+    }
+
 
 h1 {
   font-size: 18px;
+  padding: 10px;
 }
 
 h2 {
@@ -19,16 +47,33 @@ h2 {
 }
 
 ul {
-  display: flex;
+  padding: 0px;
 }
-
 
 li {
   list-style: none;
   padding: 10px;
-  display: inline-block;
-
+  font-size: 14px;
 }
+
+#places-to-show-container {
+  background-color: green;
+  height: 40px;
+  padding-left: 10px;
+  display: flex;
+  align-items: center;
+}
+
+    #places-to-show-header {
+      padding-right: 20px;
+    }
+
+    #places-to-show-name {
+      list-style: none;
+      padding: 10px;
+      display: inline-block;
+      cursor: pointer;
+    }
 
 header {
   background-color: red;
@@ -41,13 +86,6 @@ header {
   background-color: grey;
   display: flex;
   justify-content: center;
-}
-
-#places-to-show-container {
-  background-color: green;
-  height: 40px;
-  display: flex;
-  align-items: center;
 }
 
 #search-area {
