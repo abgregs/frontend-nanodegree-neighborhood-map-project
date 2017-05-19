@@ -19,6 +19,8 @@ function Listing (results, name, icon) {
   this.icon = icon;
 };
 
+// The place names for our list view
+var listNamesControl = [];
 
 var ViewModel =  function() {
   var self = this;
@@ -29,8 +31,7 @@ var ViewModel =  function() {
   // Place to store our markers
   this.markers = new ko.observableArray([]);
 
-  // Place to store our names that will appear in the list view, one to store all places and one that updates with live search.
-  this.listNamesControl = new ko.observableArray([]);
+  // Our list view of places names that will update with live search.
   this.listNamesLive = new ko.observableArray([]);
 
   // Show or hide the set of markers on the map for a specific category
@@ -45,76 +46,49 @@ var ViewModel =  function() {
         if (marker.visible !== false) {
           marker.setVisible(false);
 
-          // We'll also make sure the live search list view is updated to be in sync with the displayed markers.
-          self.removeFromListView(markerTitle);
+          // We'll also make sure our list of place names used to control the live list view is updated to sync with what markers are on the map.
+          var index = listNamesControl.indexOf(markerTitle);
+          listNamesControl.splice(index, 1);
         }
+
         else {
           marker.setVisible(true);
 
-          // We'll also make sure the live search list view is updated to be in sync with the displayed markers.
-          self.addToListView(markerTitle);
+          // We'll also make sure our list of place names used to control the live list view is updated to sync with what markers are on the map.
+          listNamesControl.push(markerTitle);
         }
       }
-
-    });
-
-
-
-  }
-
-  // Takes places from our categories places list and removes them from the list view. This executes within our toggleMarkers() function whenever we are removing places from the map.
-  this.removeFromListView = function(markerTitle) {
-    var listNamesLive = self.listNamesLive;
-    var listNamesControl = self.listNamesControl;
-    listNamesLive().forEach(function(listPlaceName) {
-      if (listPlaceName === markerTitle) {
-        var indexLive = listNamesLive.indexOf(listPlaceName);
-        var indexControl = listNamesControl.indexOf(listPlaceName);
-        listNamesLive.splice(indexLive, 1);
-        listNamesControl.splice(indexControl, 1);
-      }
-    });
-  };
-
-  // Takes places from our categories places list and removes them from the list view. This executes within our toggleMarkers() function whenever we are adding places back to the map.
-  this.addToListView = function(markerTitle) {
-    var listNamesLive = self.listNamesLive;
-    var listNamesControl = self.listNamesControl;
-    listNamesLive.push(markerTitle);
-    listNamesLive.sort();
-    listNamesControl.push(markerTitle);
-  };
+      });
+    };
 
   this.query = ko.observable('');
 
   // Match value from our search input to our list of places to create our live search list view.
   this.search = function(value) {
-    var listNamesControl = self.listNamesControl;
+    // var listNamesControl = self.listNamesControl;
     var listNamesLive = self.listNamesLive;
     listNamesLive.removeAll();
+    if (value == '') return;
 
-    listNamesControl().forEach(function (name) {
-      if (name.toLowerCase().indexOf(value.toLowerCase()) >= 0) {
-        listNamesLive.push(name);
+    for (var name in listNamesControl) {
+      if (listNamesControl[name].toLowerCase().indexOf(value.toLowerCase()) >= 0) {
+        listNamesLive.push(listNamesControl[name]);
       }
-    });
-  }
+      listNamesLive.sort();
+    }
+  };
 
-  this.activateMarker  = function() {
-    var markers = self.markers;
-    var placeName = this;
+  this.activateMarker  = function(placeName) {
+    var markers = self.markers
     markers().forEach(function(marker) {
       var markerTitle = marker.title;
       console.log(markerTitle);
       console.log(placeName);
       if (markerTitle === placeName) {
-
         makeActiveMarker();
         }
     });
-
   }
-
 };
 
 var vm = new ViewModel();
@@ -176,7 +150,7 @@ function initMap() {
   function createListNames(results) {
     results.forEach(function(result) {
       var name = result.name;
-      vm.listNamesControl.push(name);
+      listNamesControl.push(name);
       vm.listNamesLive.push(name);
       vm.listNamesLive.sort();
     })
@@ -275,6 +249,6 @@ function getPlacesDetails(marker, infowindow) {
 
 
 
-setTimeout(function(){ console.log(vm.markers()); }, 4000);
-setTimeout(function(){ console.log(vm.listings()); }, 4000);
-// setTimeout(function(){ console.log(vm.listNames()); }, 4000);
+// setTimeout(function(){ console.log(vm.markers()); }, 4000);
+// setTimeout(function(){ console.log(vm.listings()); }, 4000);
+// setTimeout(function(){ console.log(listNamesControl); }, 4000);

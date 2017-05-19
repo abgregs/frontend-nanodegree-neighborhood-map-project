@@ -19,18 +19,15 @@
         </ul>
       </div>
       <div id="search-area">
-        <input data-bind="value: query, valueUpdate: 'keyup'" id="search-bar" class="rounded" type="search" placeholder="Ex: Pablo's Coffee">
+        <input data-bind="value: query, valueUpdate: 'keyup'" id="search-bar" class="rounded" type="search" placeholder="Ex: Pablo's Coffee" autocomplete="off">
       </div>
     </header>
 
     <div id=wrapper>
     <div id="places-list-container">
-      <!-- <li data-bind="foreach: listings" id="places-list-heading"> -->
-        <!-- <h2 data-bind="text: name"></h2> -->
           <ul data-bind="foreach: listNamesLive">
               <li data-bind="text: $data, click: $root.activateMarker" id="places-list-item"></li>
           </ul>
-      <!-- </li> -->
     </div>
 
     <div id="map"></div>
