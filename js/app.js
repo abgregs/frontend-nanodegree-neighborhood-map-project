@@ -22,6 +22,19 @@ function Listing (results, name, icon) {
 // The place names for our list view
 var listNamesControl = [];
 
+
+var searchBar = document.getElementById('search-bar');
+
+// var searchBar = document.getElementById('search-bar');
+// searchBar.addEventListener("blur", function () {
+//       this.value='';
+//       vm.listNamesLive.removeAll();
+//       listNamesControl.forEach(function(name) {
+//       vm.listNamesLive.push(name);
+//       vm.listNamesLive.sort();
+//     })
+// });
+
 var ViewModel =  function() {
   var self = this;
 
@@ -36,6 +49,10 @@ var ViewModel =  function() {
 
   // Show or hide the set of markers on the map for a specific category
   this.toggleMarkers = function () {
+
+    searchBar.value='';
+    self.listNamesLive.removeAll();
+
     var markers = self.markers;
     var listingIcon = this.icon;
     markers().forEach(function(marker) {
@@ -49,6 +66,7 @@ var ViewModel =  function() {
           // We'll also make sure our list of place names used to control the live list view is updated to sync with what markers are on the map.
           var index = listNamesControl.indexOf(markerTitle);
           listNamesControl.splice(index, 1);
+
         }
 
         else {
@@ -58,6 +76,11 @@ var ViewModel =  function() {
           listNamesControl.push(markerTitle);
         }
       }
+    });
+
+      listNamesControl.forEach(function(name) {
+        vm.listNamesLive.push(name);
+        vm.listNamesLive.sort();
       });
     };
 
@@ -79,16 +102,24 @@ var ViewModel =  function() {
   };
 
   this.activateMarker  = function(placeName) {
-    var markers = self.markers
+    var markers = self.markers;
     markers().forEach(function(marker) {
       var markerTitle = marker.title;
-      console.log(markerTitle);
-      console.log(placeName);
+      var markerVisible = marker.visible;
       if (markerTitle === placeName) {
-        makeActiveMarker();
+
+        if (markerVisible === true) {
+
+        google.maps.event.trigger(marker, 'click');
+
         }
+        else {
+
+          alert("Marker not displayed on map");
+        }
+      }
     });
-  }
+  };
 };
 
 var vm = new ViewModel();
@@ -225,8 +256,8 @@ function getPlacesDetails(marker, infowindow) {
         innerHTML += '<br><br><img src="' + place.photos[0].getUrl(
             {maxHeight: 100, maxWidth: 200}) + '">';
       }
-      if (place.photos === null) {
-        innerHTML += '<br><br>Sorry, there is no photo to show for this place'
+      if (place.photos === undefined) {
+        innerHTML += '<br><br>Sorry, there is no photo available for this place'
       }
       innerHTML += '</div>';
       infowindow.setContent(innerHTML);
@@ -250,5 +281,5 @@ function getPlacesDetails(marker, infowindow) {
 
 
 // setTimeout(function(){ console.log(vm.markers()); }, 4000);
-// setTimeout(function(){ console.log(vm.listings()); }, 4000);
+setTimeout(function(){ console.log(vm.listings()); }, 4000);
 // setTimeout(function(){ console.log(listNamesControl); }, 4000);
