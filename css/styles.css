@@ -169,6 +169,11 @@ footer {
     padding: 8px;
     font-size: 12px;
   }
+
+  #infowindow-content {
+    font-size: 10px;
+  }
+
 }
 
 @media (min-width: 575px) {
@@ -186,6 +191,11 @@ footer {
     padding: 8px;
     font-size: 14px;
   }
+
+  #infowindow-content {
+    font-size: 12px;
+  }
+
 }
 
 @media (min-width: 780px) {
@@ -202,6 +212,11 @@ footer {
     padding: 10px;
     font-size: 16px;
   }
+
+  #infowindow-content {
+    font-size: 13px;
+  }
+
 }
 
 @media (min-width: 1150px) {
@@ -216,5 +231,9 @@ footer {
   li {
     list-style: none;
     font-size: 20px;
+  }
+
+  #infowindow-content {
+    font-size: 14px;
   }
 }
