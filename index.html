@@ -5,35 +5,46 @@
     <meta charset="UTF-8">
     <title>Food and Drinks in Denver's Cap Hill Neighborhood</title>
     <link rel='stylesheet' type='text/css' href='css/styles.css'>
+    <link href="https://fonts.googleapis.com/css?family=Roboto|Satisfy" rel="stylesheet">
 </head>
 <body>
 
-    <header>
-      <div id='header-title'>
-        <h1>Food and Drinks in Denver's Cap Hill Neighborhood</h1>
-      </div>
-      <div id="places-to-show-container">
-        <h2 id="places-to-show-header">Places to Show</h2>
-        <ul data-bind="foreach: listings">
-          <li data-bind="text: name, click: $root.toggleMarkers" id="places-to-show-name"></li>
-        </ul>
-      </div>
-      <div id="search-area">
-        <input data-bind="value: query, valueUpdate: 'keyup'" id="search-bar" class="rounded" type="search" placeholder="Ex: Pablo's Coffee" autocomplete="off">
-      </div>
-    </header>
+  <div id="top-section-wrapper">
+    <div id="header" class="center-content">
+      <h1>Food and Drinks in Denver's Cap Hill Neighborhood</h1>
+    </div>
 
-    <div id=wrapper>
+
+    <div id="places-to-show-container" class="centered">
+      <h2 id="places-to-show-header" class="places-child">Places to Show</h2>
+      <ul data-bind="foreach: listings" class="places-child">
+        <li data-bind="text: name, click: $root.toggleMarkers" id="places-to-show-name" class="places-child"></li>
+      </ul>
+    </div>
+
+    <div id="search-area">
+      <input data-bind="value: query, valueUpdate: 'keyup'" id="search-bar" class="rounded" type="search" placeholder="Ex: Pablo's Coffee" autocomplete="off">
+    </div>
+  </div>
+
+
+  <div id="map-section-wrapper">
     <div id="places-list-container">
-          <ul data-bind="foreach: listNamesLive">
-              <li data-bind="text: $data, click: $root.activateMarker" id="places-list-item"></li>
-          </ul>
+        <ul data-bind="foreach: listNamesLive">
+            <li data-bind="text: $data, click: $root.activateMarker" id="places-list-item"></li>
+        </ul>
     </div>
 
     <div id="map"></div>
   </div>
 
-  <script src="js/lib/knockout-3.2.0.js"></script>
+  <footer>
+    Place name, address, and photos provided by <a target="_blank" href="https://developers.google.com/maps/">Google Maps Javascript API</a>.<br>
+    Venue information provided by <a target="_blank" href="https://developer.foursquare.com/">Foursquare API</a>.
+  </footer>
+
+  <script src="js/libs/jquery.min.js"></script>
+  <script src="js/libs/knockout-3.2.0.js"></script>
   <script src="js/app.js"></script>
   <script src='https://maps.googleapis.com/maps/api/js?v=3&libraries=geometry,places&key=AIzaSyAosFpNNrLHBpMXqdzBonzKCglMLAeSx1M&callback=initMap'async defer></script>
 </body>

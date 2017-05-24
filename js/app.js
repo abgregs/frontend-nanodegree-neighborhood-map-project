@@ -1,3 +1,30 @@
+// Get current date in DDMMYYYY for versioning param in foursquare
+var today = new Date();
+var dd = today.getDate();
+var mm = today.getMonth()+1;
+
+var yyyy = today.getFullYear();
+if(dd<10){
+    dd='0'+dd;
+}
+if(mm<10){
+    mm='0'+mm;
+}
+var today = yyyy+mm+dd;
+
+// another foursquare versioning param
+var m = 'foursquare';
+
+// Param for search radius
+var radius = "150";
+
+// Param for limiting number of search results
+var limit = '1';
+
+
+
+
+
 var map;
 
 // Starting coordinates to center on Cap Hill neighborhood.
@@ -8,7 +35,7 @@ var startingLng = -104.9797753;
 var categories = [
   {name: 'Coffee', iconURL: './img/Coffee.svg', query: 'coffee shops in Capitol Hill, Denver, CO'},
   {name: 'Pizza', iconURL: './img/Pizza.svg', query: 'pizza in Capitol Hill, Denver, CO'},
-  {name: 'Ice Cream', iconURL: './img/iceCream.svg', query: 'ice cream shops in Capitol Hill, Denver, CO'},
+  {name: 'Ice Cream', iconURL: './img/iceCream.svg', query: 'homeade ice cream in Capitol Hill, Denver, CO'},
   {name: 'Breweries', iconURL: './img/Brewery.svg', query: 'breweries in Capitol Hill, Denver, CO'}
 ];
 
@@ -22,27 +49,16 @@ function Listing (results, name, icon) {
 // The place names for our list view
 var listNamesControl = [];
 
+// Place to store our markers
+var markers = [];
 
 var searchBar = document.getElementById('search-bar');
-
-// var searchBar = document.getElementById('search-bar');
-// searchBar.addEventListener("blur", function () {
-//       this.value='';
-//       vm.listNamesLive.removeAll();
-//       listNamesControl.forEach(function(name) {
-//       vm.listNamesLive.push(name);
-//       vm.listNamesLive.sort();
-//     })
-// });
 
 var ViewModel =  function() {
   var self = this;
 
   // Place to store our listings for each category
   this.listings = new ko.observableArray([]);
-
-  // Place to store our markers
-  this.markers = new ko.observableArray([]);
 
   // Our list view of places names that will update with live search.
   this.listNamesLive = new ko.observableArray([]);
@@ -53,9 +69,8 @@ var ViewModel =  function() {
     searchBar.value='';
     self.listNamesLive.removeAll();
 
-    var markers = self.markers;
     var listingIcon = this.icon;
-    markers().forEach(function(marker) {
+    markers.forEach(function(marker) {
       var markerIcon = marker.icon.url;
       var markerTitle = marker.title;
       if (listingIcon === markerIcon) {
@@ -88,7 +103,6 @@ var ViewModel =  function() {
 
   // Match value from our search input to our list of places to create our live search list view.
   this.search = function(value) {
-    // var listNamesControl = self.listNamesControl;
     var listNamesLive = self.listNamesLive;
     listNamesLive.removeAll();
     if (value == '') return;
@@ -102,8 +116,8 @@ var ViewModel =  function() {
   };
 
   this.activateMarker  = function(placeName) {
-    var markers = self.markers;
-    markers().forEach(function(marker) {
+
+    markers.forEach(function(marker) {
       var markerTitle = marker.title;
       var markerVisible = marker.visible;
       if (markerTitle === placeName) {
@@ -115,7 +129,7 @@ var ViewModel =  function() {
         }
         else {
 
-          alert("Marker not displayed on map");
+          alert("Oops, this marker is not displayed on map");
         }
       }
     });
@@ -152,15 +166,16 @@ function initMap() {
          var name = category.name;
          var icon = category.iconURL;
 
+        // Create a listing object for each category that includes the text search results.
+        var listing = new Listing(results, name, icon);
+        vm.listings.push(listing);
+
         // Get the places from our results and add markers to the map
         createMarkersForPlaces(results, icon);
 
         // Get the place names from our results list and we will push them to a KO observableArray. This will help us create our list view of place names that refreshes based on the live search feature.
         createListNames(results);
 
-        // Create a listing object for each category that includes the text search results.
-        var listing = new Listing(results, name, icon);
-        vm.listings.push(listing);
       }
       else {
         alert("Places request was not successful for the following reasons: " + status);
@@ -168,9 +183,9 @@ function initMap() {
      });
    });
 
-
    };
 
+   // Places search to get a list of places based on our initial categories, and defined above.
    textSearchPlaces();
 
    // Create a single infowindow to be used with the place details information
@@ -190,7 +205,7 @@ function initMap() {
 
   function createMarkersForPlaces(places, iconURL) {
     var bounds = new google.maps.LatLngBounds();
-    for (var i = 0; i < places.length; i++) {
+    for (var i in places) {
       var place = places[i];
       var icon = {
 
@@ -202,6 +217,7 @@ function initMap() {
         anchor: new google.maps.Point(15, 34),
         scaledSize: new google.maps.Size(25, 25)
       };
+
       // Create a marker for each place.
       var marker = new google.maps.Marker({
         map: map,
@@ -212,19 +228,22 @@ function initMap() {
         id: place.place_id
       });
 
-      vm.markers.push(marker);
+      // Create list of markers
+      markers.push(marker);
+
+      // Using the marker information to do a search in foursquare and get other information, which we'll later include in our infowindow.
+      getFoursquareData(marker);
+
 
       // If a marker is clicked, get its place details and display in infowindow.
-      marker.addListener('click', makeActiveMarker);
-
-      var makeActiveMarker = function () {
+      marker.addListener('click', function() {
         this.setAnimation(google.maps.Animation.DROP);
         if (placeInfoWindow.marker == this) {
          console.log("This infowindow already is on this marker!");
         } else {
          getPlacesDetails(this, placeInfoWindow);
         }
-      };
+      });
 
       if (place.geometry.viewport) {
         // Only geocodes have viewport.
@@ -245,7 +264,7 @@ function getPlacesDetails(marker, infowindow) {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
       // Set the marker property on this infowindow so it isn't created again.
       infowindow.marker = marker;
-      var innerHTML = '<div>';
+      var innerHTML = '<div id="infowindow-content">';
       if (place.name) {
         innerHTML += '<strong>' + place.name + '</strong>';
       }
@@ -257,8 +276,35 @@ function getPlacesDetails(marker, infowindow) {
             {maxHeight: 100, maxWidth: 200}) + '">';
       }
       if (place.photos === undefined) {
-        innerHTML += '<br><br>Sorry, there is no photo available for this place'
+        innerHTML += '<br><br>' + "Sorry, Google couldn't find a photo of this place!"
       }
+
+      if (marker.venueName) {
+        innerHTML += '<br><br>Venue name: ' + marker.venueName;
+      }
+
+      if (marker.venueName === undefined) {
+        innerHTML += '<br>' + "Sorry, Foursquare couldn't locate this venue!"
+      }
+
+      if (marker.hours) {
+        innerHTML += '<br>'+ "Today's hours: " + marker.hours.status;
+      }
+
+      if (marker.price) {
+        innerHTML += '<br>'+ "Price: " + marker.price.message;
+      }
+
+      if(marker.menu) {
+        innerHTML += '<br><a target="_blank" href="' + marker.menu.url +'">View Menu</a>';
+        if (marker.url) {
+          innerHTML += ' | <a target="_blank" href="' + marker.url +'">View Website</a>';
+        }
+      }
+
+
+
+
       innerHTML += '</div>';
       infowindow.setContent(innerHTML);
       infowindow.open(map, marker);
@@ -270,16 +316,45 @@ function getPlacesDetails(marker, infowindow) {
   });
 }
 
- }
+}
+
+
+// Pass in each new marker and make requests to foursquare for more information about that location.
+function getFoursquareData(marker) {
+
+ // For testing if helpful to pass a query param to find our venue.
+ var query = marker.title;
+
+ // Format the latLng from Google to fit the "ll" param used in foursquare, getting rid of parenths and spaces.
+ var ll = marker.position;
+ ll = ll.toString();
+ ll = ll.replace(/\s+/g, '');
+ ll = ll.slice(1, -1);
+
+ $.ajax({
+   dataType: "json",
+   url: "https://api.foursquare.com/v2/venues/search?client_id=G0W4ZXCGBU5LBPBWHFUY53MKSW125RAWMAVVSJXUUPKVDQNY&client_secret=2YGNDY3DZZVQX1DRZEQKAUI333O2TESFOTTVE5KT3LQKDSUU" + "&ll=" + ll + "&query=" + query + "&limit=" + limit + "&v=" + today + "&m=" + m,
+   success: function (data) {
+
+     var venueID = data.response.venues[0].id;
+
+     $.ajax({
+       dataType: "json",
+       url: "https://api.foursquare.com/v2/venues/" + venueID + "?client_id=G0W4ZXCGBU5LBPBWHFUY53MKSW125RAWMAVVSJXUUPKVDQNY&client_secret=2YGNDY3DZZVQX1DRZEQKAUI333O2TESFOTTVE5KT3LQKDSUU" + "&v=" + today + "&m=" + m,
+       success: function (data) {
+
+        // Make the new information part of our marker, then use it to customize our infowindow with 3rd party API (when we set the content of the infowindow).
+        marker.venueName = data.response.venue.name;
+        marker.hours = data.response.venue.hours;
+        marker.price = data.response.venue.price;
+        marker.menu = data.response.venue.menu;
+        marker.url = data.response.venue.url;
+         }
+     });
+   }
+  });
+};
 
 
 
-
-
-
-
-
-
-// setTimeout(function(){ console.log(vm.markers()); }, 4000);
-setTimeout(function(){ console.log(vm.listings()); }, 4000);
-// setTimeout(function(){ console.log(listNamesControl); }, 4000);
+setTimeout(function(){ console.log(markers)}, 12000);
