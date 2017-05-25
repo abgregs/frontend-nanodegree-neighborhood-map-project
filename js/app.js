@@ -361,8 +361,8 @@ function getFoursquareData(marker) {
      });
    },
    error: function(XMLHttpRequest, textStatus, errorThrown) {
-     console.log('There was an error with the following status: ' + textStatus);
-     alert('The following error was thrown: ' + errorThrown);
+     alert('There was an error with the following status: ' + textStatus);
+     alert('An error occured: ' + errorThrown);
 }
   });
 };
