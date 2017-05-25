@@ -243,6 +243,10 @@ function initMap() {
         } else {
          getPlacesDetails(this, placeInfoWindow);
         }
+
+        map.setCenter(this.getPosition());
+        map.panBy(-130, 0);
+
       });
 
       if (place.geometry.viewport) {
@@ -349,9 +353,17 @@ function getFoursquareData(marker) {
         marker.price = data.response.venue.price;
         marker.menu = data.response.venue.menu;
         marker.url = data.response.venue.url;
-         }
+      },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+          console.log('There was an error with the following status: ' + textStatus);
+          alert('The following error was thrown: ' + errorThrown);
+     }
      });
-   }
+   },
+   error: function(XMLHttpRequest, textStatus, errorThrown) {
+     console.log('There was an error with the following status: ' + textStatus);
+     alert('The following error was thrown: ' + errorThrown);
+}
   });
 };
 
