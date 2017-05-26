@@ -38,6 +38,7 @@ Some of the concepts and solutions used in this app have been borrowed from or i
 
 Live search with Knockout.js: http://opensoul.org/2011/06/23/live-search-with-knockoutjs/
 https://gist.github.com/hinchley/5973926#file-knockout-live-search
+https://codepen.io/NKiD/pen/JRVZgv
 
 Positioning and layout of the map: http://stackoverflow.com/questions/7213503/set-google-map-canvas-width-100-minus-sidebar-width
 https://stackoverflow.com/questions/6037712/how-to-float-a-div-over-google-maps

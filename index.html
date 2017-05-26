@@ -23,14 +23,14 @@
     </div>
 
     <div id="search-area">
-      <input data-bind="value: query, valueUpdate: 'keyup'" id="search-bar" class="rounded" type="search" placeholder="Ex: Pablo's Coffee" autocomplete="off">
+      <input data-bind="textInput: listNamesSearchKeyword" id="search-bar" class="rounded" type="text" placeholder="Ex: Pablo's Coffee" autocomplete="off">
     </div>
   </div>
 
 
   <div id="map-section-wrapper">
     <div id="places-list-container">
-        <ul data-bind="foreach: listNamesLive">
+        <ul data-bind="foreach: filterNames">
             <li data-bind="text: $data, click: $root.activateMarker" id="places-list-item"></li>
         </ul>
     </div>

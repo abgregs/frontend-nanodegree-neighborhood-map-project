@@ -21,6 +21,8 @@ var radius = "150";
 // Param for limiting number of search results
 var limit = '1';
 
+
+
 var map;
 
 // Starting coordinates to center on Cap Hill neighborhood.
@@ -53,10 +55,6 @@ function mapError() {
   alert("Error warning: Google map could not load");
 }
 
-categories.forEach(function(category) {
-  var imgURL = category.iconURL;
-
-});
 
 
 // Listing constructor that will give us an object for each place category that contains the results list of places.
@@ -64,7 +62,7 @@ function Listing (results, name, icon) {
   this.results = results;
   this.name = name;
   this.icon = icon;
-};
+}
 
 // The place names for our list view
 var listNamesControl = [];
@@ -75,19 +73,25 @@ var markers = [];
 var ViewModel =  function() {
   var self = this;
 
-  // Place to store our listings for each category
+  // Place to store our listings for each category.
   this.listings = new ko.observableArray([]);
+
+  // Used to get text input for live search filter.
+  this.listNamesSearchKeyword = new ko.observable('');
 
   // Our list view of places names that will update with live search.
   this.listNamesLive = new ko.observableArray([]);
 
+  // Used to update our list view based on live search filter.
+  this.filterNames = new ko.observable('');
+
   // Show or hide the set of markers on the map for a specific category
   this.toggleMarkers = function () {
 
-    // searchBar.value='';
     self.listNamesLive.removeAll();
 
     var listingIcon = this.icon;
+
     markers.forEach(function(marker) {
       var markerIcon = marker.icon.url;
       var markerTitle = marker.title;
@@ -111,26 +115,26 @@ var ViewModel =  function() {
       }
     });
 
+
+
       listNamesControl.forEach(function(name) {
         vm.listNamesLive.push(name);
         vm.listNamesLive.sort();
       });
     };
 
-  this.query = ko.observable('');
-
-  // Match value from our search input to our list of places to create our live search list view.
-  this.search = function(value) {
-    var listNamesLive = self.listNamesLive;
-    listNamesLive.removeAll();
-
-    for (var name in listNamesControl) {
-      if (listNamesControl[name].toLowerCase().indexOf(value.toLowerCase()) >= 0) {
-        listNamesLive.push(listNamesControl[name]);
-      }
-      listNamesLive.sort();
+  // Match value from our text input to our list of places to create our search filter list view
+  this.filterNames = ko.computed(() => {
+    if (!this.listNamesSearchKeyword()) {
+      // No input found, return list of all visible places marked on map
+      return this.listNamesLive();
+    } else {
+      // input found, match keyword to filter
+      return ko.utils.arrayFilter(this.listNamesLive(), (name) => {
+        return name.toLowerCase().indexOf(this.listNamesSearchKeyword().toLowerCase()) !== -1;
+      });
     }
-  };
+  });
 
   this.activateMarker  = function(placeName) {
 
@@ -153,9 +157,9 @@ var ViewModel =  function() {
   };
 };
 
+
 var vm = new ViewModel();
 ko.applyBindings(vm);
-vm.query.subscribe(vm.search);
 
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
@@ -168,7 +172,7 @@ function initMap() {
     console.log("Success");
   }
   else {
-    alert("Google Maps API did not load successfully due to internet connectivity issues.")
+    alert("Google Maps API did not load successfully due to internet connectivity issues.");
   }
 
   // latLngBounds around Cap Hill neighborhood to bias text search
@@ -207,7 +211,7 @@ function initMap() {
      });
    });
 
-   };
+   }
 
    // Places search to get a list of places based on our initial categories, and defined above.
    textSearchPlaces();
@@ -223,7 +227,7 @@ function initMap() {
       listNamesControl.push(name);
       vm.listNamesLive.push(name);
       vm.listNamesLive.sort();
-    })
+    });
   }
 
 
@@ -293,45 +297,23 @@ function getPlacesDetails(marker, infowindow) {
       // Set the marker property on this infowindow so it isn't created again.
       infowindow.marker = marker;
       var innerHTML = '<div id="infowindow-content">';
-      if (place.name) {
-        innerHTML += '<strong>' + place.name + '</strong>';
-      }
-      if (place.formatted_address) {
-        innerHTML += '<br>' + place.formatted_address;
-      }
-      if (place.photos) {
-        innerHTML += '<br><br><img src="' + place.photos[0].getUrl(
-            {maxHeight: 100, maxWidth: 200}) + '">';
-      }
-      if (place.photos === undefined) {
-        innerHTML += '<br><br>' + "Sorry, Google couldn't find a photo of this place!"
-      }
 
-      if (marker.venueName) {
-        innerHTML += '<br><br>Venue name: ' + marker.venueName;
-      }
+      place.name ? innerHTML += '<strong>' + place.name + '</strong>' : innerHTML += '<strong>' + "No place name available from Google";
 
-      if (marker.venueName === undefined) {
-        innerHTML += '<br>' + "Sorry, Foursquare couldn't locate this venue!"
-      }
+      place.formatted_address ? innerHTML += '<br>' + place.formatted_address : innerHTML += '<br>' + "No address available from Google";
 
-      if (marker.hours) {
-        innerHTML += '<br>'+ "Today's hours: " + marker.hours.status;
-      }
+      place.photos ? innerHTML += '<br><br><img src="' + place.photos[0].getUrl(
+            {maxHeight: 100, maxWidth: 200}) + '">' : innerHTML += '<br><br>' + "Sorry, Google couldn't find a photo of this place!";
 
-      if (marker.price) {
-        innerHTML += '<br>'+ "Price: " + marker.price.message;
-      }
+      marker.venueName ? innerHTML += '<br><br>Foursquare Venue Result: ' + marker.venueName : innerHTML += '<br>' + "Sorry, Foursquare couldn't find a venue here!";
 
-      if(marker.menu) {
-        innerHTML += '<br><a target="_blank" href="' + marker.menu.url +'">View Menu</a>';
-        if (marker.url) {
-          innerHTML += ' | <a target="_blank" href="' + marker.url +'">View Website</a>';
-        }
-      }
+      marker.hours ? innerHTML += '<br>' + "Today's hours: " + marker.hours.status : innerHTML += '<br>'+ "Hours not available";
 
+      marker.price ? innerHTML += '<br>' + "Price: " + marker.price.message : innerHTML += '<br>'+ "Price level not available";
 
+      marker.menu ? innerHTML += '<br><a target="_blank" href="' + marker.menu.url + '">View Menu</a>' : innerHTML += '<br>' + "Menu not available";
 
+      marker.url ? innerHTML += ' | <a target="_blank" href="' + marker.url + '">View Website</a>' : innerHTML += ' | Website not available';
 
       innerHTML += '</div>';
       infowindow.setContent(innerHTML);
@@ -364,8 +346,11 @@ function getFoursquareData(marker) {
    dataType: "json",
    url: "https://api.foursquare.com/v2/venues/search?client_id=G0W4ZXCGBU5LBPBWHFUY53MKSW125RAWMAVVSJXUUPKVDQNY&client_secret=2YGNDY3DZZVQX1DRZEQKAUI333O2TESFOTTVE5KT3LQKDSUU" + "&ll=" + ll + "&query=" + query + "&limit=" + limit + "&v=" + today + "&m=" + m,
    success: function (data) {
+     if (data.response.venues[0]) {
 
      var venueID = data.response.venues[0].id;
+
+
 
      $.ajax({
        dataType: "json",
@@ -383,12 +368,13 @@ function getFoursquareData(marker) {
           alert('The following error occured: ' + errorThrown);
      }
      });
-   },
+   }
+ },
    error: function(jqXHR, textStatus, errorThrown) {
      alert('The following error occured: ' + errorThrown);
 }
   });
-};
+}
 
 
 
