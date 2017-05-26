@@ -35,5 +35,6 @@ Live search with Knockout.js: http://opensoul.org/2011/06/23/live-search-with-kn
 https://gist.github.com/hinchley/5973926#file-knockout-live-search
 
 Positioning and layout of the map: http://stackoverflow.com/questions/7213503/set-google-map-canvas-width-100-minus-sidebar-width
+https://stackoverflow.com/questions/6037712/how-to-float-a-div-over-google-maps
 
 Getting today's date: https://stackoverflow.com/questions/12409299/how-to-get-current-formatted-date-dd-mm-yyyy-in-javascript-and-append-it-to-an-i
