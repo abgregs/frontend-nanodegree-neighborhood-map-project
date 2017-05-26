@@ -21,10 +21,6 @@ var radius = "150";
 // Param for limiting number of search results
 var limit = '1';
 
-
-
-
-
 var map;
 
 // Starting coordinates to center on Cap Hill neighborhood.
@@ -41,6 +37,8 @@ var categories = [
 
 categories.forEach(function (category) {
     var file = category.iconURL;
+
+// Image loading error handling.
 $.ajax({
       type: 'HEAD',
       url: file,
@@ -49,6 +47,11 @@ $.ajax({
       }
   });
 });
+
+// Google map loading error handling
+function mapError() {
+  alert("Error warning: Google map could not load");
+}
 
 categories.forEach(function(category) {
   var imgURL = category.iconURL;
@@ -69,8 +72,6 @@ var listNamesControl = [];
 // Place to store our markers
 var markers = [];
 
-var searchBar = document.getElementById('search-bar');
-
 var ViewModel =  function() {
   var self = this;
 
@@ -83,7 +84,7 @@ var ViewModel =  function() {
   // Show or hide the set of markers on the map for a specific category
   this.toggleMarkers = function () {
 
-    searchBar.value='';
+    // searchBar.value='';
     self.listNamesLive.removeAll();
 
     var listingIcon = this.icon;
@@ -122,7 +123,6 @@ var ViewModel =  function() {
   this.search = function(value) {
     var listNamesLive = self.listNamesLive;
     listNamesLive.removeAll();
-    if (value == '') return;
 
     for (var name in listNamesControl) {
       if (listNamesControl[name].toLowerCase().indexOf(value.toLowerCase()) >= 0) {

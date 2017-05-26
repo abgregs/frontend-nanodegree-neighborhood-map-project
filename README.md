@@ -1,7 +1,7 @@
 Front-End Web Development Nano-Degree - Neighborhood Map Project
 ================================================================
 
-What is it?
+What Is It?
 -----------
 In this project I used the Google Maps JavaScript API to create a map of my neighborhood, trigger Google places search requests for areas of interest, and dynamically display them on the map. The theme for the areas of interest is food and drink. The categories for the places are included are listed at the top of the app, and when clicked, will show or hide the list of all places marked on the map belonging to that category.
 
@@ -16,7 +16,12 @@ Getting Started
 
 To get started, download the project here: https://github.com/abgregs/frontend-nanodegree-neighborhood-map-project
 
-Load index.html in your browser to view the app.
+You can set up a local server with python to run the app. Once Python is installed on your machine, navigate to the folder where you saved the project after downloading from GitHub. If you're using Python 3.x or higher, in your terminal execute the following command: `python -m http.server 8000`. If you're using Python 2.x, execute the following command: `python -m SimpleHTTPServer 8000`. You should see a message: `Serving HTTP on 0.0.0.0 port 8000 ...`
+
+Then, open up a browser and enter the following address: http://localhost:8000/index.html
+
+What's Included
+----------------
 
 The project currently contains an `index.html` and `img`, `js`, and `css` folders.
 

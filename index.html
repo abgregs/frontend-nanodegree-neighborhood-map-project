@@ -4,7 +4,7 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="UTF-8">
     <title>Food and Drinks in Denver's Cap Hill Neighborhood</title>
-    <link rel='stylesheet' type='text/css' href='css/styles.css'>
+    <link rel='stylesheet' href='css/styles.css'>
     <link href="https://fonts.googleapis.com/css?family=Roboto|Satisfy" rel="stylesheet">
 </head>
 <body>
@@ -47,6 +47,6 @@
   <script src="js/libs/jquery.min.js"></script>
   <script src="js/libs/knockout-3.2.0.js"></script>
   <script src="js/app.js"></script>
-  <script src='https://maps.googleapis.com/maps/api/js?v=3&libraries=geometry,places&key=AIzaSyAosFpNNrLHBpMXqdzBonzKCglMLAeSx1M&callback=initMap'async defer></script>
+  <script src='https://maps.googleapis.com/maps/api/js?v=3&libraries=geometry,places&key=AIzaSyAosFpNNrLHBpMXqdzBonzKCglMLAeSx1M&callback=initMap' async defer onerror='mapError()'></script>
 </body>
 </html>
