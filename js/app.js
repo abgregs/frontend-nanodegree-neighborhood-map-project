@@ -39,6 +39,23 @@ var categories = [
   {name: 'Breweries', iconURL: './img/Brewery.svg', query: 'breweries in Capitol Hill, Denver, CO'}
 ];
 
+categories.forEach(function (category) {
+    var file = category.iconURL;
+$.ajax({
+      type: 'HEAD',
+      url: file,
+      error: function() {
+          alert("The following error occured: The map marker icon image file " + file + " wasn't found");
+      }
+  });
+});
+
+categories.forEach(function(category) {
+  var imgURL = category.iconURL;
+
+});
+
+
 // Listing constructor that will give us an object for each place category that contains the results list of places.
 function Listing (results, name, icon) {
   this.results = results;
@@ -355,14 +372,12 @@ function getFoursquareData(marker) {
         marker.url = data.response.venue.url;
       },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
-          console.log('There was an error with the following status: ' + textStatus);
-          alert('The following error was thrown: ' + errorThrown);
+          alert('An error occured: ' );
      }
      });
    },
    error: function(XMLHttpRequest, textStatus, errorThrown) {
-     alert('There was an error with the following status: ' + textStatus);
-     alert('An error occured: ' + errorThrown);
+     alert('An error occured: ' );
 }
   });
 };
