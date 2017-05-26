@@ -1,4 +1,4 @@
-// Get current date in DDMMYYYY for versioning param in foursquare
+// Get current date in YYYYMMDD for versioning param in foursquare
 var today = new Date();
 var dd = today.getDate();
 var mm = today.getMonth()+1;
@@ -379,12 +379,12 @@ function getFoursquareData(marker) {
         marker.menu = data.response.venue.menu;
         marker.url = data.response.venue.url;
       },
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
+        error: function(jqXHR, textStatus, errorThrown) {
           alert('The following error occured: ' + errorThrown);
      }
      });
    },
-   error: function(XMLHttpRequest, textStatus, errorThrown) {
+   error: function(jqXHR, textStatus, errorThrown) {
      alert('The following error occured: ' + errorThrown);
 }
   });
