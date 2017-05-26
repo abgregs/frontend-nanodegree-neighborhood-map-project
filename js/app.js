@@ -164,6 +164,13 @@ function initMap() {
     mapTypeControl: false
   });
 
+  if (typeof google === 'object' && typeof google.maps === 'object') {
+    console.log("Success");
+  }
+  else {
+    alert("Google Maps API did not load successfully due to internet connectivity issues.")
+  }
+
   // latLngBounds around Cap Hill neighborhood to bias text search
   var neBound = new google.maps.LatLng(39.7399521, -104.9730662);
   var swBound = new google.maps.LatLng(39.7224799, -104.9883449);
@@ -195,7 +202,7 @@ function initMap() {
 
       }
       else {
-        alert("Places request was not successful for the following reasons: " + status);
+        alert("Places request was not successful for the following reason: " + status);
       }
      });
    });
@@ -329,6 +336,7 @@ function getPlacesDetails(marker, infowindow) {
       innerHTML += '</div>';
       infowindow.setContent(innerHTML);
       infowindow.open(map, marker);
+
       // Make sure the marker property is cleared if the infowindow is closed.
       infowindow.addListener('closeclick', function() {
         infowindow.marker = null;
@@ -346,7 +354,7 @@ function getFoursquareData(marker) {
  // For testing if helpful to pass a query param to find our venue.
  var query = marker.title;
 
- // Format the latLng from Google to fit the "ll" param used in foursquare, getting rid of parenths and spaces.
+ // Format the latLng from Google to fit the "ll" param used in foursquare, getting rid of parens and spaces.
  var ll = marker.position;
  ll = ll.toString();
  ll = ll.replace(/\s+/g, '');
@@ -372,16 +380,16 @@ function getFoursquareData(marker) {
         marker.url = data.response.venue.url;
       },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
-          alert('An error occured: ' );
+          alert('The following error occured: ' + errorThrown);
      }
      });
    },
    error: function(XMLHttpRequest, textStatus, errorThrown) {
-     alert('An error occured: ' );
+     alert('The following error occured: ' + errorThrown);
 }
   });
 };
 
 
 
-setTimeout(function(){ console.log(markers)}, 12000);
+// setTimeout(function(){ console.log(markers)}, 8000);
