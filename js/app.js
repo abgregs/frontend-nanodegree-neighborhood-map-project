@@ -67,6 +67,9 @@ function Listing (results, name, icon) {
 // The place names for our list view
 var listNamesControl = [];
 
+// Place to reference all original place names and to refresh to our original view.
+var listNamesAll = [];
+
 // Place to store our markers
 var markers = [];
 
@@ -91,13 +94,13 @@ var ViewModel =  function() {
     self.listNamesLive.removeAll();
 
     var listingIcon = this.icon;
+    console.log(listingIcon);
 
     markers.forEach(function(marker) {
       var markerIcon = marker.icon.url;
       var markerTitle = marker.title;
       if (listingIcon === markerIcon) {
-
-        if (marker.visible !== false) {
+        if (marker.visible == true) {
           marker.setVisible(false);
 
           // We'll also make sure our list of place names used to control the live list view is updated to sync with what markers are on the map.
@@ -111,6 +114,7 @@ var ViewModel =  function() {
 
           // We'll also make sure our list of place names used to control the live list view is updated to sync with what markers are on the map.
           listNamesControl.push(markerTitle);
+
         }
       }
     });
@@ -118,20 +122,45 @@ var ViewModel =  function() {
 
 
       listNamesControl.forEach(function(name) {
-        vm.listNamesLive.push(name);
-        vm.listNamesLive.sort();
+        self.listNamesLive.push(name);
+        self.listNamesLive.sort();
       });
     };
 
+  this.resetView = function () {
+      console.log("search is active")
+
+  }
+
   // Match value from our text input to our list of places to create our search filter list view
-  this.filterNames = ko.computed(() => {
-    if (!this.listNamesSearchKeyword()) {
-      // No input found, return list of all visible places marked on map
-      return this.listNamesLive();
+  this.filterNames = ko.computed(function() {
+
+    // Fiddling with getting markers and places to reset when search filter used.
+    // If no input, return list of all markers and places.
+    if (self.listNamesSearchKeyword() == ' ') {
+
+        markers.forEach(function(marker) {
+          if (marker.visible !== true)
+          marker.setVisible(true);
+        });
+
+        self.listNamesLive.removeAll();
+        listNamesControl = [];
+        listNamesAll.forEach(function(name) {
+          listNamesControl.push(name);
+          self.listNamesLive.push(name);
+          self.listNamesLive.sort()
+        });
+
+
+
+      return self.listNamesLive();
+
+
     } else {
       // input found, match keyword to filter
-      return ko.utils.arrayFilter(this.listNamesLive(), (name) => {
-        return name.toLowerCase().indexOf(this.listNamesSearchKeyword().toLowerCase()) !== -1;
+      return ko.utils.arrayFilter(self.listNamesLive(), (name) => {
+        return name.toLowerCase().indexOf(self.listNamesSearchKeyword().toLowerCase()) !== -1;
       });
     }
   });
@@ -224,7 +253,12 @@ function initMap() {
   function createListNames(results) {
     results.forEach(function(result) {
       var name = result.name;
+
       listNamesControl.push(name);
+      listNamesControl.sort();
+      listNamesAll.push(name);
+      listNamesAll.sort();
+
       vm.listNamesLive.push(name);
       vm.listNamesLive.sort();
     });
