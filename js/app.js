@@ -77,37 +77,44 @@ var ViewModel =  function() {
   this.searchKeyword = new ko.observable('');
 
   // Set visible status of markers on the map when a category is clicked.
-  this.toggleMarkers = function () {
+  // this.toggleMarkers = function () {
+  //
+  //   // self.listNamesCategories.removeAll();
+  //   var listingIcon = this.icon;
+  //
+  //   self.markers().forEach(function(marker) {
+  //     var markerIcon = marker.icon.url;
+  //     if (listingIcon === markerIcon) {
+  //       self.updateMarkerToggle(marker);
+  //       }
+  //   });
+  // }
+  // Sets the visible status of markers when the categories are clicked.
+  // this.updateMarkerToggle = function() {
+  //   if (this.toggleVisible === true) {
+  //     this.toggleVisible = false;
+  //     console.log(this.toggleVisible);
+  //   }
+  //   else {
+  //     this.toggleVisible = true;
+  //     console.log(this.toggleVisible);
+  //   }
+  // }
 
-    // self.listNamesCategories.removeAll();
-    var listingIcon = this.icon;
+  // Changes the visible value of each category when clicked.
+  this.setIsVisible = function () {
+    this.isVisible ? this.isVisible = false : this.isVisible = true;
+      console.log(this.isVisible);
 
-    self.markers().forEach(function(marker) {
-      var markerIcon = marker.icon.url;
-      if (listingIcon === markerIcon) {
-        self.updateMarkerToggle(marker);
-        }
-    });
   }
-
-    // Sets the visible status of markers when the categories are clicked.
-    this.updateMarkerToggle = function() {
-      if (this.toggleVisible === true) {
-        this.toggleVisible = false;
-        console.log(this.toggleVisible);
-      }
-      else {
-        this.toggleVisible = true;
-        console.log(this.toggleVisible);
-      }
-    }
 
   // Get the value from our text input to filter markers and place names based on search keyword and category selection.
   this.filterNames = ko.computed(function() {
     var markers = self.markers();
 
     return ko.utils.arrayFilter(markers, function(marker) {
-       var match = marker.title.toLowerCase().indexOf(self.searchKeyword().toLowerCase()) !== -1 && marker.toggleVisible === true;
+       var match = marker.title.toLowerCase().indexOf(self.searchKeyword().toLowerCase()) !== -1;
+      //  && marker.toggleVisible === true;     (how do I evaluate isVisible here to also account for the categories filter??)
        marker.setVisible(match);
        return match;
     })
