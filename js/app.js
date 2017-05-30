@@ -15,12 +15,11 @@ var today = yyyy+mm+dd;
 // another foursquare versioning param
 var m = 'foursquare';
 
-// Param for search radius
+// Param for search radius in foursquare
 var radius = "150";
 
-// Param for limiting number of search results
+// Param for limiting number of search results in foursquare
 var limit = '1';
-
 
 
 var map;
@@ -62,137 +61,74 @@ function Listing (results, name, icon) {
   this.results = results;
   this.name = name;
   this.icon = icon;
+  this.isVisible = ko.observable(true);
 }
-
-// The place names for our list view
-var listNamesControl = [];
-
-// Place to reference all original place names and to refresh to our original view.
-var listNamesAll = [];
-
-// Place to store our markers
-var markers = [];
 
 var ViewModel =  function() {
   var self = this;
 
-  // Place to store our listings for each category.
+  // Our listings based on our initial categories.
   this.listings = new ko.observableArray([]);
 
+  // Our markers that we will filter through for live search and match based on categories selected.
+  this.markers = new ko.observableArray([]);
+
   // Used to get text input for live search filter.
-  this.listNamesSearchKeyword = new ko.observable('');
+  this.searchKeyword = new ko.observable('');
 
-  // Our list view of places names that will update with live search.
-  this.listNamesLive = new ko.observableArray([]);
-
-  // Used to update our list view based on live search filter.
-  this.filterNames = new ko.observable('');
-
-  // Show or hide the set of markers on the map for a specific category
+  // Set visible status of markers on the map when a category is clicked.
   this.toggleMarkers = function () {
 
-    self.listNamesLive.removeAll();
-
+    // self.listNamesCategories.removeAll();
     var listingIcon = this.icon;
 
-    markers.forEach(function(marker) {
+    self.markers().forEach(function(marker) {
       var markerIcon = marker.icon.url;
-      var markerTitle = marker.title;
       if (listingIcon === markerIcon) {
-        if (marker.visible == true) {
-          marker.setVisible(false);
-
-          // We'll also make sure our list of place names used to control the live list view is updated to sync with what markers are on the map.
-          var index = listNamesControl.indexOf(markerTitle);
-          listNamesControl.splice(index, 1);
-
+        self.updateMarkerToggle(marker);
         }
-
-        else {
-          marker.setVisible(true);
-
-          // We'll also make sure our list of place names used to control the live list view is updated to sync with what markers are on the map.
-          listNamesControl.push(markerTitle);
-
-        }
-      }
     });
+  }
 
+    // Sets the visible status of markers when the categories are clicked.
+    this.updateMarkerToggle = function() {
+      if (this.toggleVisible === true) {
+        this.toggleVisible = false;
+        console.log(this.toggleVisible);
+      }
+      else {
+        this.toggleVisible = true;
+        console.log(this.toggleVisible);
+      }
+    }
 
-
-      listNamesControl.forEach(function(name) {
-        self.listNamesLive.push(name);
-        self.listNamesLive.sort();
-      });
-    };
-
-
-
-  // Match value from our text input to our list of places, creating the list of matching places for our search filter.
+  // Get the value from our text input to filter markers and place names based on search keyword and category selection.
   this.filterNames = ko.computed(function() {
+    var markers = self.markers();
 
+    return ko.utils.arrayFilter(markers, function(marker) {
+       var match = marker.title.toLowerCase().indexOf(self.searchKeyword().toLowerCase()) !== -1 && marker.toggleVisible === true;
+       marker.setVisible(match);
+       return match;
+    })
 
-  // If no input, adjust the places list to account for what categories are selected and what markers are visible.
-    if (self.listNamesSearchKeyword() === '') {
-
-    return self.listNamesLive();
-
-
-    }
-
-    else {
-    // Once input found, reset markers and places to default view, and filter through all of them to find matches to the keyword from our text input.
-
-      markers.forEach(function(marker) {
-        if (marker.visible !== true)
-        marker.setVisible(true);
-      });
-
-      self.listNamesLive.removeAll();
-      listNamesControl = [];
-      listNamesAll.forEach(function(name) {
-        listNamesControl.push(name);
-        self.listNamesLive.push(name);
-        self.listNamesLive.sort()
-      });
-
-      markers.forEach(function(marker) {
-        if (marker.title.toLowerCase().indexOf(self.listNamesSearchKeyword().toLowerCase()) !== -1) {
-           marker.setVisible(true);
-        }
-        else {
-          marker.setVisible(false);
-        }
-      });
-
-      return ko.utils.arrayFilter(self.listNamesLive(), (name) => {
-        return name.toLowerCase().indexOf(self.listNamesSearchKeyword().toLowerCase()) !== -1;
-      });
-
-    }
 
   });
 
-  this.activateMarker  = function(placeName) {
+  this.activateMarker  = function(marker) {
 
-    markers.forEach(function(marker) {
-      var markerTitle = marker.title;
-      var markerVisible = marker.visible;
-      if (markerTitle === placeName) {
+    var markerVisible = marker.visible;
+    if (markerVisible === true) {
+      google.maps.event.trigger(marker, 'click');
+    }
+    else {
+      alert("Oops, this marker is not displayed on map");
+    }
+  }
 
-        if (markerVisible === true) {
-
-        google.maps.event.trigger(marker, 'click');
-
-        }
-        else {
-
-          alert("Oops, this marker is not displayed on map");
-        }
-      }
-    });
-  };
+// End of veiw model.
 };
+
 
 
 var vm = new ViewModel();
@@ -238,8 +174,6 @@ function initMap() {
         // Get the places from our results and add markers to the map
         createMarkersForPlaces(results, icon);
 
-        // Get the place names from our results list and we will push them to a KO observableArray. This will help us create our list view of place names that refreshes based on the live search feature.
-        createListNames(results);
 
       }
       else {
@@ -256,21 +190,6 @@ function initMap() {
    // Create a single infowindow to be used with the place details information
    // so that only one is open at once.
    var placeInfoWindow = new google.maps.InfoWindow();
-
-  // Create list of place names that we will use for our list view.
-  function createListNames(results) {
-    results.forEach(function(result) {
-      var name = result.name;
-
-      listNamesControl.push(name);
-      listNamesControl.sort();
-      listNamesAll.push(name);
-      listNamesAll.sort();
-
-      vm.listNamesLive.push(name);
-      vm.listNamesLive.sort();
-    });
-  }
 
 
   function createMarkersForPlaces(places, iconURL) {
@@ -295,11 +214,13 @@ function initMap() {
         visible: true,
         title: place.name,
         position: place.geometry.location,
-        id: place.place_id
+        id: place.place_id,
+        toggleVisible: true
       });
 
+
       // Create list of markers
-      markers.push(marker);
+      vm.markers.push(marker);
 
       // Using the marker information to do a search in foursquare and get other information, which we'll later include in our infowindow.
       getFoursquareData(marker);
@@ -371,7 +292,6 @@ function getPlacesDetails(marker, infowindow) {
 
 }
 
-
 // Pass in each new marker and make requests to foursquare for more information about that location.
 function getFoursquareData(marker) {
 
@@ -419,5 +339,4 @@ function getFoursquareData(marker) {
 }
 
 
-
-// setTimeout(function(){ console.log(markers)}, 8000);
+setTimeout(function(){ console.log(vm.listings()[0].isVisible())}, 8000);
