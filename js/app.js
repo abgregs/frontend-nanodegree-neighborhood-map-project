@@ -94,7 +94,6 @@ var ViewModel =  function() {
     self.listNamesLive.removeAll();
 
     var listingIcon = this.icon;
-    console.log(listingIcon);
 
     markers.forEach(function(marker) {
       var markerIcon = marker.icon.url;
@@ -127,38 +126,35 @@ var ViewModel =  function() {
       });
     };
 
-  this.resetView = function () {
-      console.log("search is active")
 
-  }
-
-  // Match value from our text input to our list of places to create our search filter list view
+  // Match value from our text input to our list of places, creating the list of matching places for our search filter.
   this.filterNames = ko.computed(function() {
 
-    // Fiddling with getting markers and places to reset when search filter used.
-    // If no input, return list of all markers and places.
-    if (self.listNamesSearchKeyword() == ' ') {
 
-        markers.forEach(function(marker) {
-          if (marker.visible !== true)
-          marker.setVisible(true);
-        });
-
-        self.listNamesLive.removeAll();
-        listNamesControl = [];
-        listNamesAll.forEach(function(name) {
-          listNamesControl.push(name);
-          self.listNamesLive.push(name);
-          self.listNamesLive.sort()
-        });
-
-
+  // Once user is searching, whenever no text is entered, return list of all markers and places.
+    if (self.listNamesSearchKeyword() === '') {
 
       return self.listNamesLive();
 
+    }
 
-    } else {
-      // input found, match keyword to filter
+
+    else {
+    // Once input found, reset markers and places to default view, and filter through all of them to find matches to the keyword from our text input.
+
+      markers.forEach(function(marker) {
+        if (marker.visible !== true)
+        marker.setVisible(true);
+      });
+
+      self.listNamesLive.removeAll();
+      listNamesControl = [];
+      listNamesAll.forEach(function(name) {
+        listNamesControl.push(name);
+        self.listNamesLive.push(name);
+        self.listNamesLive.sort()
+      });
+
       return ko.utils.arrayFilter(self.listNamesLive(), (name) => {
         return name.toLowerCase().indexOf(self.listNamesSearchKeyword().toLowerCase()) !== -1;
       });
