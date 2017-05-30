@@ -61,7 +61,7 @@ function Listing (results, name, icon) {
   this.results = results;
   this.name = name;
   this.icon = icon;
-  this.isVisible = ko.observable(true);
+  this.isVisible = true;
 }
 
 var ViewModel =  function() {
@@ -76,32 +76,7 @@ var ViewModel =  function() {
   // Used to get text input for live search filter.
   this.searchKeyword = new ko.observable('');
 
-  // Set visible status of markers on the map when a category is clicked.
-  // this.toggleMarkers = function () {
-  //
-  //   // self.listNamesCategories.removeAll();
-  //   var listingIcon = this.icon;
-  //
-  //   self.markers().forEach(function(marker) {
-  //     var markerIcon = marker.icon.url;
-  //     if (listingIcon === markerIcon) {
-  //       self.updateMarkerToggle(marker);
-  //       }
-  //   });
-  // }
-  // Sets the visible status of markers when the categories are clicked.
-  // this.updateMarkerToggle = function() {
-  //   if (this.toggleVisible === true) {
-  //     this.toggleVisible = false;
-  //     console.log(this.toggleVisible);
-  //   }
-  //   else {
-  //     this.toggleVisible = true;
-  //     console.log(this.toggleVisible);
-  //   }
-  // }
-
-  // Changes the visible value of each category when clicked.
+  // Changes the visible setting property of each category when clicked.
   this.setIsVisible = function () {
     this.isVisible ? this.isVisible = false : this.isVisible = true;
       console.log(this.isVisible);
@@ -111,17 +86,29 @@ var ViewModel =  function() {
   // Get the value from our text input to filter markers and place names based on search keyword and category selection.
   this.filterNames = ko.computed(function() {
     var markers = self.markers();
+    var listings = self.listings();
 
     return ko.utils.arrayFilter(markers, function(marker) {
-       var match = marker.title.toLowerCase().indexOf(self.searchKeyword().toLowerCase()) !== -1;
-      //  && marker.toggleVisible === true;     (how do I evaluate isVisible here to also account for the categories filter??)
-       marker.setVisible(match);
-       return match;
-    })
 
+      var matchSearch = marker.title.toLowerCase().indexOf(self.searchKeyword().toLowerCase()) !== -1;
+
+      var matchCat = true;
+
+      // Return matchCat false for any markers in a category whose markers are set to hidden (filter out any categories that have been de-selected).
+      listings.forEach(function(listing) {
+        if (marker.category === listing.name  && !listing.isVisible) {
+          matchCat = false;
+        }
+      });
+
+    var match = matchSearch && matchCat;
+    marker.setVisible(match);
+    return match;
+    });
 
   });
 
+  // Triggers click event on our marker to open infowindow.
   this.activateMarker  = function(marker) {
 
     var markerVisible = marker.visible;
@@ -133,7 +120,7 @@ var ViewModel =  function() {
     }
   }
 
-// End of veiw model.
+// End of view model.
 };
 
 
@@ -179,7 +166,7 @@ function initMap() {
         vm.listings.push(listing);
 
         // Get the places from our results and add markers to the map
-        createMarkersForPlaces(results, icon);
+        createMarkersForPlaces(results, icon, name);
 
 
       }
@@ -199,7 +186,7 @@ function initMap() {
    var placeInfoWindow = new google.maps.InfoWindow();
 
 
-  function createMarkersForPlaces(places, iconURL) {
+  function createMarkersForPlaces(places, iconURL, categoryName) {
     var bounds = new google.maps.LatLngBounds();
     for (var i in places) {
       var place = places[i];
@@ -218,11 +205,11 @@ function initMap() {
       var marker = new google.maps.Marker({
         map: map,
         icon: icon,
+        category: categoryName,
         visible: true,
         title: place.name,
         position: place.geometry.location,
-        id: place.place_id,
-        toggleVisible: true
+        id: place.place_id
       });
 
 
@@ -346,4 +333,4 @@ function getFoursquareData(marker) {
 }
 
 
-setTimeout(function(){ console.log(vm.listings()[0].isVisible())}, 8000);
+// setTimeout(function(){ console.log(vm.markers()[0])}, 8000);
