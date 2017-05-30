@@ -127,17 +127,18 @@ var ViewModel =  function() {
     };
 
 
+
   // Match value from our text input to our list of places, creating the list of matching places for our search filter.
   this.filterNames = ko.computed(function() {
 
 
-  // Once user is searching, whenever no text is entered, return list of all markers and places.
+  // If no input, adjust the places list to account for what categories are selected and what markers are visible.
     if (self.listNamesSearchKeyword() === '') {
 
-      return self.listNamesLive();
+    return self.listNamesLive();
+
 
     }
-
 
     else {
     // Once input found, reset markers and places to default view, and filter through all of them to find matches to the keyword from our text input.
@@ -155,10 +156,21 @@ var ViewModel =  function() {
         self.listNamesLive.sort()
       });
 
+      markers.forEach(function(marker) {
+        if (marker.title.toLowerCase().indexOf(self.listNamesSearchKeyword().toLowerCase()) !== -1) {
+           marker.setVisible(true);
+        }
+        else {
+          marker.setVisible(false);
+        }
+      });
+
       return ko.utils.arrayFilter(self.listNamesLive(), (name) => {
         return name.toLowerCase().indexOf(self.listNamesSearchKeyword().toLowerCase()) !== -1;
       });
+
     }
+
   });
 
   this.activateMarker  = function(placeName) {
