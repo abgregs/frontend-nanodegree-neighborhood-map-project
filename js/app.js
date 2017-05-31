@@ -81,7 +81,7 @@ var ViewModel =  function() {
     console.log(this.isVisible());
     this.isVisible() ? this.isVisible(false) : this.isVisible(true);
 
-  }
+  };
 
   // Get the value from our text input to filter markers and place names based on search keyword and category selection.
   this.filterNames = ko.computed(function() {
@@ -118,7 +118,7 @@ var ViewModel =  function() {
     else {
       alert("Oops, this marker is not displayed on map");
     }
-  }
+  };
 
 // End of view model.
 };
