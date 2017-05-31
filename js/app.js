@@ -61,7 +61,7 @@ function Listing (results, name, icon) {
   this.results = results;
   this.name = name;
   this.icon = icon;
-  this.isVisible = true;
+  this.isVisible = new ko.observable(true);
 }
 
 var ViewModel =  function() {
@@ -78,8 +78,8 @@ var ViewModel =  function() {
 
   // Changes the visible setting property of each category when clicked.
   this.setIsVisible = function () {
-    this.isVisible ? this.isVisible = false : this.isVisible = true;
-      console.log(this.isVisible);
+    console.log(this.isVisible());
+    this.isVisible() ? this.isVisible() = false : this.isVisible() = true;
 
   }
 
@@ -96,7 +96,7 @@ var ViewModel =  function() {
 
       // Return matchCat false for any markers in a category whose markers are set to hidden (filter out any categories that have been de-selected).
       listings.forEach(function(listing) {
-        if (marker.category === listing.name  && !listing.isVisible) {
+        if (marker.category === listing.name  && !listing.isVisible()) {
           matchCat = false;
         }
       });
