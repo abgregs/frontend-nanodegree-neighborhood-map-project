@@ -79,7 +79,7 @@ var ViewModel =  function() {
   // Changes the visible setting property of each category when clicked.
   this.setIsVisible = function () {
     console.log(this.isVisible());
-    this.isVisible() ? this.isVisible() = false : this.isVisible() = true;
+    this.isVisible() ? this.isVisible(false) : this.isVisible(true);
 
   }
 
