@@ -78,9 +78,8 @@ var ViewModel =  function() {
 
   // Changes the visible setting property of each category when clicked.
   this.setIsVisible = function () {
-    console.log(this.isVisible());
     this.isVisible() ? this.isVisible(false) : this.isVisible(true);
-
+    console.log(this.isVisible());
   };
 
   // Get the value from our text input to filter markers and place names based on search keyword and category selection.

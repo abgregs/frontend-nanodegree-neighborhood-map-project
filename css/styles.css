@@ -27,24 +27,26 @@ a:hover {
 
 
 h1 {
-  font-size: 16px;
-  padding: 3px;
+  font-size: 20px;
+  padding: 1.5%;
+
 }
 
 h2 {
-  font-size: 10px;
+  font-size: 18px;
   padding: 2px;
 }
 
 ul {
   list-style-type: none;
   padding: 0;
+  margin: 0;
 }
 
 li {
   list-style: none;
   padding: 2px;
-  font-size: 9px;
+  font-size: 16px;
 }
 
 #top-section-wrapper {
@@ -52,22 +54,29 @@ li {
 }
 
 #header {
-  padding: 1%;
   width:100%;
-  max-height:40px;
+  padding: 3px;
   font-family: 'Satisfy', cursive;
   vertical-align: middle;
+  overflow: hidden;
 }
 
 #places-to-show-container {
   max-height: 30px;
   width: 100%;
-  white-space: nowrap;
   padding: 1px;
+  margin: 0;
+}
+
+#places-to-show-categories {
+
+
 }
 
 
 #places-to-show-header {
+  margin: 0;
+  padding: 1.5%;
   white-space: nowrap;
   overflow: hidden;
 }
@@ -131,10 +140,10 @@ li {
 }
 
     #places-list-item {
-      padding: 0px 2px 1px 10px;
+      padding: 1px 2px 1px 10px;
       list-style: none;
       cursor: pointer;
-      font-size: 10px;
+      font-size: 16px;
     }
 
 
@@ -161,40 +170,6 @@ footer {
 }
 
 @media (min-width: 330px) {
-  h1 {
-    font-size: 16px;
-    padding: 5px;
-  }
-
-  h2 {
-    font-size: 12px;
-    padding: 5px;
-  }
-
-  li {
-    list-style: none;
-    padding: 5px;
-    font-size: 10px;
-  }
-
-  #infowindow-content {
-    font-size: 10px;
-  }
-
-}
-
-@media (min-width: 420px) {
-  h1 {
-    font-size: 18px;
-  }
-
-  h2 {
-    font-size: 16px;
-  }
-
-  li {
-    font-size: 12px;
-  }
 
   #infowindow-content {
     font-size: 10px;
@@ -204,18 +179,18 @@ footer {
 
 @media (min-width: 600px) {
   h1 {
-    font-size: 22px;
+    font-size: 26px;
     padding: 8px;
   }
 
   h2 {
-    font-size: 18px;
+    font-size: 22px;
     padding: 6px;
   }
 
   li {
     padding: 8px;
-    font-size: 16px;
+    font-size: 20px;
   }
 
   #infowindow-content {
@@ -227,22 +202,7 @@ footer {
 
   }
 
-}
-
 @media (min-width: 780px) {
-  h1 {
-    font-size: 26px;
-  }
-
-  h2 {
-    font-size: 22px;
-    padding: 10px;
-  }
-
-  li {
-    padding: 10px;
-    font-size: 18px;
-  }
 
   #infowindow-content {
     font-size: 13px;
@@ -252,19 +212,24 @@ footer {
     width: 25%;
   }
 
+  #places-list-item {
+    font-size: 12px;
+
+}
+
 }
 
 @media (min-width: 1150px) {
   h1 {
-    font-size: 30px;
+    font-size: 32px;
   }
 
   h2 {
-    font-size: 26px;
+    font-size: 28px;
   }
 
   li {
-    font-size: 22px;
+    font-size: 24px;
 
   }
 
