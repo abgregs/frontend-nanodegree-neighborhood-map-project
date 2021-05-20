@@ -301,7 +301,7 @@ function getFoursquareData(marker) {
 
  $.ajax({
    dataType: "json",
-   url: "https://api.foursquare.com/v2/venues/search?client_id=G0W4ZXCGBU5LBPBWHFUY53MKSW125RAWMAVVSJXUUPKVDQNY&client_secret=2YGNDY3DZZVQX1DRZEQKAUI333O2TESFOTTVE5KT3LQKDSUU" + "&ll=" + ll + "&query=" + query + "&limit=" + limit + "&v=" + today + "&m=" + m,
+   url: "https://api.foursquare.com/v2/venues/search?client_id=G0W4ZXCGBU5LBPBWHFUY53MKSW125RAWMAVVSJXUUPKVDQNY&client_secret=GHZ4IMQJ33R0CSEBYIMDO5HJQVGGZOENZHDHFOW2MWOK2QBD" + "&ll=" + ll + "&query=" + query + "&limit=" + limit + "&v=" + today + "&m=" + m,
    success: function (data) {
      if (data.response.venues[0]) {
 
