@@ -310,7 +310,7 @@ function getFoursquareData(marker) {
 
      $.ajax({
        dataType: "json",
-       url: "https://api.foursquare.com/v2/venues/" + venueID + "?client_id=G0W4ZXCGBU5LBPBWHFUY53MKSW125RAWMAVVSJXUUPKVDQNY&client_secret=2YGNDY3DZZVQX1DRZEQKAUI333O2TESFOTTVE5KT3LQKDSUU" + "&v=" + today + "&m=" + m,
+       url: "https://api.foursquare.com/v2/venues/" + venueID + "?client_id=G0W4ZXCGBU5LBPBWHFUY53MKSW125RAWMAVVSJXUUPKVDQNY&client_secret=GHZ4IMQJ33R0CSEBYIMDO5HJQVGGZOENZHDHFOW2MWOK2QBD" + "&v=" + today + "&m=" + m,
        success: function (data) {
 
         // Make the new information part of our marker, then use it to customize our infowindow with 3rd party API (when we set the content of the infowindow).
