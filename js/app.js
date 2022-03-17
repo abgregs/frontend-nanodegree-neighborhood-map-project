@@ -44,7 +44,7 @@ var categories = [
     query: "homeade ice cream in Capitol Hill, Denver, CO"
   }, {
     name: "Breweries",
-    iconURL: "../img/Brewery.svg",
+    iconURL: "./img/Brewery.svg",
     query: "breweries in Capitol Hill, Denver, CO"
   }
 ];
